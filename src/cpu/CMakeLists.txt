@@ -18,6 +18,7 @@
 add_library(cpu OBJECT
     cpu.c
     cpu_table.c
+    x64.c
     fpu.c x86.c
     808x.c
     808x_common.c

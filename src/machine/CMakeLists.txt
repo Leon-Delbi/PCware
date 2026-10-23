@@ -67,6 +67,10 @@ add_library(mch OBJECT
     m_at_socket370.c
     m_at_socket423.c
     m_at_socket478.c
+    m_at_socket754.c
+    m_at_socket939.c
+    m_at_socketam2.c
+    m_at_lga775.c
     m_at_slota.c
     m_at_misc.c
 )

@@ -77,8 +77,20 @@ const machine_filter_t machine_types[] = {
     { "[1998] Socket 370",                MACHINE_TYPE_SOCKET370   },
     { "[2000] Socket 423",                MACHINE_TYPE_SOCKET423   },
     { "[2001] Socket 478",                MACHINE_TYPE_SOCKET478   },
+    { "[2003] Socket 754",                MACHINE_TYPE_SOCKET754   },
+    { "[2004] Socket 939",                MACHINE_TYPE_SOCKET939   },
+    { "[2006] Socket AM2",                MACHINE_TYPE_SOCKETAM2   },
+    { "[2004] LGA 775",                   MACHINE_TYPE_LGA775      },
     { "Miscellaneous",                    MACHINE_TYPE_MISC        }
 };
+
+/* This table is indexed directly by the MACHINE_TYPE_* enum value:
+ * machine_types[machine_get_type(m)].  If the enum in machine.h ever gains a
+ * value that is not matched by a row here, that indexing walks off the end of
+ * the array and the settings code reads a garbage `name` pointer - which
+ * crashes on the very first machine, with no message.  Fail the build instead. */
+#define MACHINE_TYPES_ROWS (sizeof(machine_types) / sizeof(machine_types[0]))
+typedef char machine_types_count_must_match_enum[(MACHINE_TYPES_ROWS == MACHINE_TYPE_MAX) ? 1 : -1];
 
 const machine_filter_t machine_chipsets[] = {
     { "None",                       MACHINE_CHIPSET_NONE                },
@@ -128,6 +140,13 @@ const machine_filter_t machine_chipsets[] = {
     { "Intel i815EP",               MACHINE_CHIPSET_INTEL_I815EP        },
     { "Intel i845",                 MACHINE_CHIPSET_INTEL_I845          },
     { "Intel i845E",                MACHINE_CHIPSET_INTEL_I845E         },
+    { "VIA K8T800",                 MACHINE_CHIPSET_VIA_K8T800      },
+    { "VIA K8T800 Pro",             MACHINE_CHIPSET_VIA_K8T800_PRO  },
+    { "VIA K8T890",                 MACHINE_CHIPSET_VIA_K8T890      },
+    { "Intel 915P",                 MACHINE_CHIPSET_INTEL_915P      },
+    { "Intel 915G",                 MACHINE_CHIPSET_INTEL_915G      },
+    { "Intel 945P",                 MACHINE_CHIPSET_INTEL_945P      },
+    { "Intel 945G",                 MACHINE_CHIPSET_INTEL_945G      },
     { "OPTi 283",                   MACHINE_CHIPSET_OPTI_283            },
     { "OPTi 291",                   MACHINE_CHIPSET_OPTI_291            },
     { "OPTi 381",                   MACHINE_CHIPSET_OPTI_381            },
@@ -26840,6 +26859,396 @@ const machine_t machines[] = {
         .aliases                  = { "" }
     },
 
+
+#ifndef DISABLE_X64_SUPPORT
+    /* ==================================================================
+     *  x64 era machines (AMD K8 and Intel LGA775).
+     *
+     *  As with every other machine in this tree the original BIOS ROM
+     *  dump has to be supplied by the user under
+     *  roms/machines/<internal_name>/; without it the machine reports
+     *  itself as unavailable instead of failing at run time.
+     * ================================================================== */
+
+    {
+        .name              = "[VIA K8T800] ASUS K8V-X",
+        .internal_name     = "k8vx",
+        .type              = MACHINE_TYPE_SOCKET754,
+        .chipset           = MACHINE_CHIPSET_VIA_K8T800,
+        .init              = machine_at_k8vx_init,
+        .p1_handler        = machine_generic_p1_handler,
+        .gpio_handler      = NULL,
+        .available_flag    = MACHINE_AVAILABLE,
+        .gpio_acpi_handler = NULL,
+        .cpu               = {
+            .package     = CPU_PKG_SOCKET754,
+            .block       = CPU_BLOCK_NONE,
+            .min_bus     = 200000000,
+            .max_bus     = 200000000,
+            .min_voltage = 800,
+            .max_voltage = 1500,
+            .min_multi   = 4.0,
+            .max_multi   = 26.0
+        },
+        .bus_flags = MACHINE_PS2_NOISA,
+        .flags     = MACHINE_IDE_DUAL | MACHINE_SOUND | MACHINE_APM | MACHINE_ACPI | MACHINE_USB,
+        .ram       = {
+            .min  = 131072,
+            .max  = 4194304,
+            .step = 131072
+        },
+        .nvrmask                  = 255,
+        .jumpered_ecp_dma         = 0,
+        .default_jumpered_ecp_dma = -1,
+        .kbc_device               = NULL,
+        .kbc_params               = 0x00000000,
+        .nvr_device               = NULL,
+        .nvr_params               = 0x00000000,
+        .sio_device               = &w83627hf_no_port_92_device,
+        .sio_params               = 0x00000000,
+        .kbc_p1                   = 0x00000cf0,
+        .gpio                     = 0xffffffff,
+        .gpio_acpi                = 0xffffffff,
+        .device                   = NULL,
+        .kbd_device               = NULL,
+        .fdc_device               = NULL,
+        .vid_device               = NULL,
+        .snd_device               = NULL,
+        .net_device               = NULL,
+        .aliases                  = { "" }
+    },
+    {
+        .name              = "[VIA K8T800] MSI K8T Neo-FSR",
+        .internal_name     = "k8tneo",
+        .type              = MACHINE_TYPE_SOCKET754,
+        .chipset           = MACHINE_CHIPSET_VIA_K8T800,
+        .init              = machine_at_k8tneo_init,
+        .p1_handler        = machine_generic_p1_handler,
+        .gpio_handler      = NULL,
+        .available_flag    = MACHINE_AVAILABLE,
+        .gpio_acpi_handler = NULL,
+        .cpu               = {
+            .package     = CPU_PKG_SOCKET754,
+            .block       = CPU_BLOCK_NONE,
+            .min_bus     = 200000000,
+            .max_bus     = 200000000,
+            .min_voltage = 800,
+            .max_voltage = 1500,
+            .min_multi   = 4.0,
+            .max_multi   = 26.0
+        },
+        .bus_flags = MACHINE_PS2_NOISA,
+        .flags     = MACHINE_IDE_DUAL | MACHINE_SOUND | MACHINE_APM | MACHINE_ACPI | MACHINE_USB,
+        .ram       = {
+            .min  = 131072,
+            .max  = 4194304,
+            .step = 131072
+        },
+        .nvrmask                  = 255,
+        .jumpered_ecp_dma         = 0,
+        .default_jumpered_ecp_dma = -1,
+        .kbc_device               = NULL,
+        .kbc_params               = 0x00000000,
+        .nvr_device               = NULL,
+        .nvr_params               = 0x00000000,
+        .sio_device               = &w83627hf_no_port_92_device,
+        .sio_params               = 0x00000000,
+        .kbc_p1                   = 0x00000cf0,
+        .gpio                     = 0xffffffff,
+        .gpio_acpi                = 0xffffffff,
+        .device                   = NULL,
+        .kbd_device               = NULL,
+        .fdc_device               = NULL,
+        .vid_device               = NULL,
+        .snd_device               = NULL,
+        .net_device               = NULL,
+        .aliases                  = { "" }
+    },
+    {
+        .name              = "[VIA K8T800 Pro] ASUS A8V",
+        .internal_name     = "a8v",
+        .type              = MACHINE_TYPE_SOCKET939,
+        .chipset           = MACHINE_CHIPSET_VIA_K8T800_PRO,
+        .init              = machine_at_a8v_init,
+        .p1_handler        = machine_generic_p1_handler,
+        .gpio_handler      = NULL,
+        .available_flag    = MACHINE_AVAILABLE,
+        .gpio_acpi_handler = NULL,
+        .cpu               = {
+            .package     = CPU_PKG_SOCKET939,
+            .block       = CPU_BLOCK_NONE,
+            .min_bus     = 200000000,
+            .max_bus     = 200000000,
+            .min_voltage = 800,
+            .max_voltage = 1500,
+            .min_multi   = 4.0,
+            .max_multi   = 26.0
+        },
+        .bus_flags = MACHINE_PS2_NOISA,
+        .flags     = MACHINE_IDE_DUAL | MACHINE_SOUND | MACHINE_APM | MACHINE_ACPI | MACHINE_USB,
+        .ram       = {
+            .min  = 131072,
+            .max  = 4194304,
+            .step = 131072
+        },
+        .nvrmask                  = 255,
+        .jumpered_ecp_dma         = 0,
+        .default_jumpered_ecp_dma = -1,
+        .kbc_device               = NULL,
+        .kbc_params               = 0x00000000,
+        .nvr_device               = NULL,
+        .nvr_params               = 0x00000000,
+        .sio_device               = &w83627hf_no_port_92_device,
+        .sio_params               = 0x00000000,
+        .kbc_p1                   = 0x00000cf0,
+        .gpio                     = 0xffffffff,
+        .gpio_acpi                = 0xffffffff,
+        .device                   = NULL,
+        .kbd_device               = NULL,
+        .fdc_device               = NULL,
+        .vid_device               = NULL,
+        .snd_device               = NULL,
+        .net_device               = NULL,
+        .aliases                  = { "" }
+    },
+    {
+        .name              = "[VIA K8T800 Pro] MSI K8T Neo2-FIR",
+        .internal_name     = "k8tneo2",
+        .type              = MACHINE_TYPE_SOCKET939,
+        .chipset           = MACHINE_CHIPSET_VIA_K8T800_PRO,
+        .init              = machine_at_k8tneo2_init,
+        .p1_handler        = machine_generic_p1_handler,
+        .gpio_handler      = NULL,
+        .available_flag    = MACHINE_AVAILABLE,
+        .gpio_acpi_handler = NULL,
+        .cpu               = {
+            .package     = CPU_PKG_SOCKET939,
+            .block       = CPU_BLOCK_NONE,
+            .min_bus     = 200000000,
+            .max_bus     = 200000000,
+            .min_voltage = 800,
+            .max_voltage = 1500,
+            .min_multi   = 4.0,
+            .max_multi   = 26.0
+        },
+        .bus_flags = MACHINE_PS2_NOISA,
+        .flags     = MACHINE_IDE_DUAL | MACHINE_SOUND | MACHINE_APM | MACHINE_ACPI | MACHINE_USB,
+        .ram       = {
+            .min  = 131072,
+            .max  = 4194304,
+            .step = 131072
+        },
+        .nvrmask                  = 255,
+        .jumpered_ecp_dma         = 0,
+        .default_jumpered_ecp_dma = -1,
+        .kbc_device               = NULL,
+        .kbc_params               = 0x00000000,
+        .nvr_device               = NULL,
+        .nvr_params               = 0x00000000,
+        .sio_device               = &w83627hf_no_port_92_device,
+        .sio_params               = 0x00000000,
+        .kbc_p1                   = 0x00000cf0,
+        .gpio                     = 0xffffffff,
+        .gpio_acpi                = 0xffffffff,
+        .device                   = NULL,
+        .kbd_device               = NULL,
+        .fdc_device               = NULL,
+        .vid_device               = NULL,
+        .snd_device               = NULL,
+        .net_device               = NULL,
+        .aliases                  = { "" }
+    },
+    {
+        .name              = "[VIA K8T890] ASUS M2V",
+        .internal_name     = "m2v",
+        .type              = MACHINE_TYPE_SOCKETAM2,
+        .chipset           = MACHINE_CHIPSET_VIA_K8T890,
+        .init              = machine_at_m2v_init,
+        .p1_handler        = machine_generic_p1_handler,
+        .gpio_handler      = NULL,
+        .available_flag    = MACHINE_AVAILABLE,
+        .gpio_acpi_handler = NULL,
+        .cpu               = {
+            .package     = CPU_PKG_SOCKETAM2,
+            .block       = CPU_BLOCK_NONE,
+            .min_bus     = 200000000,
+            .max_bus     = 200000000,
+            .min_voltage = 800,
+            .max_voltage = 1400,
+            .min_multi   = 4.0,
+            .max_multi   = 26.0
+        },
+        .bus_flags = MACHINE_PS2_NOISA,
+        .flags     = MACHINE_IDE_DUAL | MACHINE_SOUND | MACHINE_APM | MACHINE_ACPI | MACHINE_USB,
+        .ram       = {
+            .min  = 131072,
+            .max  = 4194304,
+            .step = 131072
+        },
+        .nvrmask                  = 255,
+        .jumpered_ecp_dma         = 0,
+        .default_jumpered_ecp_dma = -1,
+        .kbc_device               = NULL,
+        .kbc_params               = 0x00000000,
+        .nvr_device               = NULL,
+        .nvr_params               = 0x00000000,
+        .sio_device               = &w83627hf_no_port_92_device,
+        .sio_params               = 0x00000000,
+        .kbc_p1                   = 0x00000cf0,
+        .gpio                     = 0xffffffff,
+        .gpio_acpi                = 0xffffffff,
+        .device                   = NULL,
+        .kbd_device               = NULL,
+        .fdc_device               = NULL,
+        .vid_device               = NULL,
+        .snd_device               = NULL,
+        .net_device               = NULL,
+        .aliases                  = { "" }
+    },
+    {
+        .name              = "[Intel 915P] Intel Desktop Board D915PBL",
+        .internal_name     = "d915pbl",
+        .type              = MACHINE_TYPE_LGA775,
+        .chipset           = MACHINE_CHIPSET_INTEL_915P,
+        .init              = machine_at_d915pbl_init,
+        .p1_handler        = machine_generic_p1_handler,
+        .gpio_handler      = NULL,
+        .available_flag    = MACHINE_AVAILABLE,
+        .gpio_acpi_handler = NULL,
+        .cpu               = {
+            .package     = CPU_PKG_LGA775,
+            .block       = CPU_BLOCK_NONE,
+            .min_bus     = 133333333,
+            .max_bus     = 400000000,
+            .min_voltage = 1000,
+            .max_voltage = 1500,
+            .min_multi   = 6.0,
+            .max_multi   = 28.0
+        },
+        .bus_flags = MACHINE_PS2_NOISA,
+        .flags     = MACHINE_IDE_DUAL | MACHINE_SOUND | MACHINE_APM | MACHINE_ACPI | MACHINE_USB,
+        .ram       = {
+            .min  = 131072,
+            .max  = 4194304,
+            .step = 131072
+        },
+        .nvrmask                  = 255,
+        .jumpered_ecp_dma         = 0,
+        .default_jumpered_ecp_dma = -1,
+        .kbc_device               = NULL,
+        .kbc_params               = 0x00000000,
+        .nvr_device               = NULL,
+        .nvr_params               = 0x00000000,
+        .sio_device               = &w83627hf_no_port_92_device,
+        .sio_params               = 0x00000000,
+        .kbc_p1                   = 0x00000cf0,
+        .gpio                     = 0xffffffff,
+        .gpio_acpi                = 0xffffffff,
+        .device                   = NULL,
+        .kbd_device               = NULL,
+        .fdc_device               = NULL,
+        .vid_device               = NULL,
+        .snd_device               = NULL,
+        .net_device               = NULL,
+        .aliases                  = { "" }
+    },
+    {
+        .name              = "[Intel 915P] ASUS P5GD2 Deluxe",
+        .internal_name     = "p5gd2",
+        .type              = MACHINE_TYPE_LGA775,
+        .chipset           = MACHINE_CHIPSET_INTEL_915P,
+        .init              = machine_at_p5gd2_init,
+        .p1_handler        = machine_generic_p1_handler,
+        .gpio_handler      = NULL,
+        .available_flag    = MACHINE_AVAILABLE,
+        .gpio_acpi_handler = NULL,
+        .cpu               = {
+            .package     = CPU_PKG_LGA775,
+            .block       = CPU_BLOCK_NONE,
+            .min_bus     = 133333333,
+            .max_bus     = 400000000,
+            .min_voltage = 1000,
+            .max_voltage = 1500,
+            .min_multi   = 6.0,
+            .max_multi   = 28.0
+        },
+        .bus_flags = MACHINE_PS2_NOISA,
+        .flags     = MACHINE_IDE_DUAL | MACHINE_SOUND | MACHINE_APM | MACHINE_ACPI | MACHINE_USB,
+        .ram       = {
+            .min  = 131072,
+            .max  = 4194304,
+            .step = 131072
+        },
+        .nvrmask                  = 255,
+        .jumpered_ecp_dma         = 0,
+        .default_jumpered_ecp_dma = -1,
+        .kbc_device               = NULL,
+        .kbc_params               = 0x00000000,
+        .nvr_device               = NULL,
+        .nvr_params               = 0x00000000,
+        .sio_device               = &w83627hf_no_port_92_device,
+        .sio_params               = 0x00000000,
+        .kbc_p1                   = 0x00000cf0,
+        .gpio                     = 0xffffffff,
+        .gpio_acpi                = 0xffffffff,
+        .device                   = NULL,
+        .kbd_device               = NULL,
+        .fdc_device               = NULL,
+        .vid_device               = NULL,
+        .snd_device               = NULL,
+        .net_device               = NULL,
+        .aliases                  = { "" }
+    },
+    {
+        .name              = "[Intel 945P] Intel Desktop Board D945PSN",
+        .internal_name     = "d945psn",
+        .type              = MACHINE_TYPE_LGA775,
+        .chipset           = MACHINE_CHIPSET_INTEL_945P,
+        .init              = machine_at_d945psn_init,
+        .p1_handler        = machine_generic_p1_handler,
+        .gpio_handler      = NULL,
+        .available_flag    = MACHINE_AVAILABLE,
+        .gpio_acpi_handler = NULL,
+        .cpu               = {
+            .package     = CPU_PKG_LGA775,
+            .block       = CPU_BLOCK_NONE,
+            .min_bus     = 133333333,
+            .max_bus     = 400000000,
+            .min_voltage = 1000,
+            .max_voltage = 1500,
+            .min_multi   = 6.0,
+            .max_multi   = 28.0
+        },
+        .bus_flags = MACHINE_PS2_NOISA,
+        .flags     = MACHINE_IDE_DUAL | MACHINE_SOUND | MACHINE_APM | MACHINE_ACPI | MACHINE_USB,
+        .ram       = {
+            .min  = 131072,
+            .max  = 4194304,
+            .step = 131072
+        },
+        .nvrmask                  = 255,
+        .jumpered_ecp_dma         = 0,
+        .default_jumpered_ecp_dma = -1,
+        .kbc_device               = NULL,
+        .kbc_params               = 0x00000000,
+        .nvr_device               = NULL,
+        .nvr_params               = 0x00000000,
+        .sio_device               = &w83627hf_no_port_92_device,
+        .sio_params               = 0x00000000,
+        .kbc_p1                   = 0x00000cf0,
+        .gpio                     = 0xffffffff,
+        .gpio_acpi                = 0xffffffff,
+        .device                   = NULL,
+        .kbd_device               = NULL,
+        .fdc_device               = NULL,
+        .vid_device               = NULL,
+        .snd_device               = NULL,
+        .net_device               = NULL,
+        .aliases                  = { "" }
+    },
+
+#endif /* DISABLE_X64_SUPPORT */
+
     {
         .name              = NULL,
         .internal_name     = NULL,
@@ -27332,6 +27741,32 @@ int
 machine_get_type(int m)
 {
     return (machines[m].type);
+}
+
+/* Bounds-checked lookup for code that turns a MACHINE_TYPE_* value back into
+ * its table row.  Anything out of range degrades to "Miscellaneous" instead of
+ * reading past the end of the array, which is what a stale enum/table pair
+ * used to do on the real hardware of the settings dialog. */
+const machine_filter_t *
+machine_type_info(int type)
+{
+    static int validated = 0;
+
+    if (!validated) {
+        const int rows = (int) MACHINE_TYPES_ROWS;
+
+        validated = 1;
+        for (int i = 0; i < rows; i++) {
+            if (machine_types[i].id != i)
+                fatal("machine_types[] is out of sync with machine.h: row %i carries type %i\n", i,
+                      machine_types[i].id);
+        }
+    }
+
+    if ((type < 0) || (type >= (int) MACHINE_TYPES_ROWS))
+        type = MACHINE_TYPE_MISC;
+
+    return &machine_types[type];
 }
 
 int

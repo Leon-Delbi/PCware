@@ -11050,6 +11050,166 @@ const cpu_family_t cpu_families[] = {
     },
 #endif
 //#endif
+    /* ==================================================================
+     *  64-bit capable CPUs (x64 era).
+     *
+     *  These are full table citizens: they carry the real signatures,
+     *  multipliers, voltages and cache/timing data of the silicon they
+     *  model, and report it through CPUID (see cpu64_cpuid() in cpu.c).
+     *  They execute in legacy 32-bit mode, as long mode is not part of
+     *  the CPU core yet -- see docs/X64_SUPPORT.md.
+     * ================================================================== */
+    {
+        .package       = CPU_PKG_SOCKET754,
+        .manufacturer  = "AMD",
+        .name          = "Athlon 64 (ClawHammer)",
+        .internal_name = "athlon64_clawhammer",
+        .cpus          = (const CPU[]) {
+            { "2800+", CPU_ATHLON64, fpus_internal, 1800000000, 9.0, 1500, 0xFC0, 0xFC0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 216 },
+            { "3000+", CPU_ATHLON64, fpus_internal, 2000000000, 10.0, 1500, 0xFC0, 0xFC0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 240 },
+            { "3200+", CPU_ATHLON64, fpus_internal, 2000000000, 10.0, 1450, 0xFC0, 0xFC0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 240 },
+            { "3400+", CPU_ATHLON64, fpus_internal, 2200000000, 11.0, 1500, 0xFC0, 0xFC0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 264 },
+            { "3700+", CPU_ATHLON64, fpus_internal, 2400000000, 12.0, 1500, 0xFC2, 0xFC2, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 288 },
+            { .name = "", 0 }
+        }
+    },
+    {
+        .package       = CPU_PKG_SOCKET939,
+        .manufacturer  = "AMD",
+        .name          = "Athlon 64 (Venice)",
+        .internal_name = "athlon64_venice",
+        .cpus          = (const CPU[]) {
+            { "3000+", CPU_ATHLON64, fpus_internal, 1800000000, 9.0, 1400, 0x20FF0, 0x20FF0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 216 },
+            { "3200+", CPU_ATHLON64, fpus_internal, 2000000000, 10.0, 1400, 0x20FF0, 0x20FF0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 240 },
+            { "3500+", CPU_ATHLON64, fpus_internal, 2200000000, 11.0, 1400, 0x20FF0, 0x20FF0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 264 },
+            { "3800+", CPU_ATHLON64, fpus_internal, 2400000000, 12.0, 1400, 0x20FF0, 0x20FF0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 288 },
+            { "4000+", CPU_ATHLON64, fpus_internal, 2400000000, 12.0, 1350, 0x20FF0, 0x20FF0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 288 },
+            { .name = "", 0 }
+        }
+    },
+    {
+        .package       = CPU_PKG_SOCKET939,
+        .manufacturer  = "AMD",
+        .name          = "Athlon 64 X2 (Toledo)",
+        .internal_name = "athlon64_x2_toledo",
+        .cpus          = (const CPU[]) {
+            { "3800+", CPU_ATHLON64_X2, fpus_internal, 2000000000, 10.0, 1350, 0x20FB1, 0x20FB1, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 240 },
+            { "4200+", CPU_ATHLON64_X2, fpus_internal, 2200000000, 11.0, 1350, 0x20FB1, 0x20FB1, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 264 },
+            { "4400+", CPU_ATHLON64_X2, fpus_internal, 2200000000, 11.0, 1300, 0x20FB1, 0x20FB1, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 264 },
+            { "4600+", CPU_ATHLON64_X2, fpus_internal, 2400000000, 12.0, 1350, 0x20FB1, 0x20FB1, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 288 },
+            { "4800+", CPU_ATHLON64_X2, fpus_internal, 2400000000, 12.0, 1300, 0x20FB1, 0x20FB1, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 60, 60, 20, 20, 288 },
+            { .name = "", 0 }
+        }
+    },
+    {
+        .package       = CPU_PKG_SOCKET754,
+        .manufacturer  = "AMD",
+        .name          = "Sempron (Palermo)",
+        .internal_name = "sempron_palermo",
+        .cpus          = (const CPU[]) {
+            { "2600+", CPU_SEMPRON, fpus_internal, 1600000000, 8.0, 1400, 0x20FC0, 0x20FC0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 55, 55, 18, 18, 192 },
+            { "2800+", CPU_SEMPRON, fpus_internal, 1600000000, 8.0, 1400, 0x20FC0, 0x20FC0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 55, 55, 18, 18, 192 },
+            { "3000+", CPU_SEMPRON, fpus_internal, 1800000000, 9.0, 1400, 0x20FC0, 0x20FC0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 55, 55, 18, 18, 216 },
+            { "3100+", CPU_SEMPRON, fpus_internal, 1800000000, 9.0, 1350, 0x20FC0, 0x20FC0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 55, 55, 18, 18, 216 },
+            { "3400+", CPU_SEMPRON, fpus_internal, 2000000000, 10.0, 1350, 0x20FC0, 0x20FC0, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 55, 55, 18, 18, 240 },
+            { .name = "", 0 }
+        }
+    },
+    {
+        .package       = CPU_PKG_SOCKETAM2,
+        .manufacturer  = "AMD",
+        .name          = "Athlon 64 X2 (Windsor)",
+        .internal_name = "athlon64_x2_windsor",
+        .cpus          = (const CPU[]) {
+            { "3800+", CPU_ATHLON64_X2, fpus_internal, 2000000000, 10.0, 1300, 0x40FB1, 0x40FB1, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 55, 55, 18, 18, 240 },
+            { "4200+", CPU_ATHLON64_X2, fpus_internal, 2200000000, 11.0, 1300, 0x40FB1, 0x40FB1, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 55, 55, 18, 18, 264 },
+            { "4600+", CPU_ATHLON64_X2, fpus_internal, 2400000000, 12.0, 1300, 0x40FB1, 0x40FB1, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 55, 55, 18, 18, 288 },
+            { "5000+", CPU_ATHLON64_X2, fpus_internal, 2600000000, 13.0, 1300, 0x40FB1, 0x40FB1, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 55, 55, 18, 18, 312 },
+            { .name = "", 0 }
+        }
+    },
+    {
+        .package       = CPU_PKG_LGA775,
+        .manufacturer  = "Intel",
+        .name          = "Pentium 4 (Prescott)",
+        .internal_name = "pentium4_prescott",
+        .cpus          = (const CPU[]) {
+            { "2800", CPU_PENTIUM4_EM64T, fpus_internal, 2800000000, 14.0, 1400, 0xF41, 0xF41, 0, CPU_SUPPORTS_DYNAREC, 140, 140, 48, 48, 336 },
+            { "3000", CPU_PENTIUM4_EM64T, fpus_internal, 3000000000, 15.0, 1400, 0xF41, 0xF41, 0, CPU_SUPPORTS_DYNAREC, 140, 140, 48, 48, 360 },
+            { "3200", CPU_PENTIUM4_EM64T, fpus_internal, 3200000000, 16.0, 1400, 0xF41, 0xF41, 0, CPU_SUPPORTS_DYNAREC, 140, 140, 48, 48, 384 },
+            { "3400", CPU_PENTIUM4_EM64T, fpus_internal, 3400000000, 17.0, 1400, 0xF41, 0xF41, 0, CPU_SUPPORTS_DYNAREC, 140, 140, 48, 48, 408 },
+            { "3600", CPU_PENTIUM4_EM64T, fpus_internal, 3600000000, 18.0, 1400, 0xF41, 0xF41, 0, CPU_SUPPORTS_DYNAREC, 140, 140, 48, 48, 432 },
+            { "3800", CPU_PENTIUM4_EM64T, fpus_internal, 3800000000, 19.0, 1400, 0xF41, 0xF41, 0, CPU_SUPPORTS_DYNAREC, 140, 140, 48, 48, 456 },
+            { .name = "", 0 }
+        }
+    },
+    {
+        .package       = CPU_PKG_LGA775,
+        .manufacturer  = "Intel",
+        .name          = "Pentium D (Presler)",
+        .internal_name = "pentiumd_presler",
+        .cpus          = (const CPU[]) {
+            { "915", CPU_PENTIUM_D, fpus_internal, 2930000000, 11.0, 1300, 0xF65, 0xF65, 0, CPU_SUPPORTS_DYNAREC, 140, 140, 48, 48, 351 },
+            { "920", CPU_PENTIUM_D, fpus_internal, 2800000000, 14.0, 1300, 0xF65, 0xF65, 0, CPU_SUPPORTS_DYNAREC, 140, 140, 48, 48, 336 },
+            { "930", CPU_PENTIUM_D, fpus_internal, 3000000000, 15.0, 1300, 0xF65, 0xF65, 0, CPU_SUPPORTS_DYNAREC, 140, 140, 48, 48, 360 },
+            { "940", CPU_PENTIUM_D, fpus_internal, 3200000000, 16.0, 1300, 0xF65, 0xF65, 0, CPU_SUPPORTS_DYNAREC, 140, 140, 48, 48, 384 },
+            { "950", CPU_PENTIUM_D, fpus_internal, 3400000000, 17.0, 1300, 0xF65, 0xF65, 0, CPU_SUPPORTS_DYNAREC, 140, 140, 48, 48, 408 },
+            { .name = "", 0 }
+        }
+    },
+    {
+        .package       = CPU_PKG_LGA775,
+        .manufacturer  = "Intel",
+        .name          = "Core 2 Duo (Conroe)",
+        .internal_name = "core2_conroe",
+        .cpus          = (const CPU[]) {
+            { "E6300", CPU_CORE2, fpus_internal, 1860000000, 7.0, 1350, 0x6F6, 0x6F6, 0, CPU_SUPPORTS_DYNAREC, 125, 125, 45, 45, 223 },
+            { "E6400", CPU_CORE2, fpus_internal, 2130000000, 8.0, 1350, 0x6F6, 0x6F6, 0, CPU_SUPPORTS_DYNAREC, 125, 125, 45, 45, 255 },
+            { "E6600", CPU_CORE2, fpus_internal, 2400000000, 9.0, 1350, 0x6F6, 0x6F6, 0, CPU_SUPPORTS_DYNAREC, 125, 125, 45, 45, 288 },
+            { "E6700", CPU_CORE2, fpus_internal, 2660000000, 10.0, 1350, 0x6F6, 0x6F6, 0, CPU_SUPPORTS_DYNAREC, 125, 125, 45, 45, 319 },
+            { "E6850", CPU_CORE2, fpus_internal, 3000000000, 9.0, 1300, 0x6F6, 0x6F6, 0, CPU_SUPPORTS_DYNAREC, 125, 125, 45, 45, 360 },
+            { .name = "", 0 }
+        }
+    },
+    {
+        .package       = CPU_PKG_LGA775,
+        .manufacturer  = "Intel",
+        .name          = "Core 2 Quad (Kentsfield)",
+        .internal_name = "core2_kentsfield",
+        .cpus          = (const CPU[]) {
+            { "Q6600", CPU_CORE2_QUAD, fpus_internal, 2400000000, 9.0, 1350, 0x6F7, 0x6F7, 0, CPU_SUPPORTS_DYNAREC, 130, 130, 48, 48, 288 },
+            { "Q6700", CPU_CORE2_QUAD, fpus_internal, 2660000000, 10.0, 1350, 0x6F7, 0x6F7, 0, CPU_SUPPORTS_DYNAREC, 130, 130, 48, 48, 319 },
+            { "QX6800", CPU_CORE2_QUAD, fpus_internal, 2930000000, 11.0, 1350, 0x6F7, 0x6F7, 0, CPU_SUPPORTS_DYNAREC, 130, 130, 48, 48, 351 },
+            { .name = "", 0 }
+        }
+    },
+    {
+        .package       = CPU_PKG_SOCKETAM2,
+        .manufacturer  = "AMD",
+        .name          = "Athlon 64 (Orleans)",
+        .internal_name = "athlon64_orleans",
+        .cpus          = (const CPU[]) {
+            { "3000+", CPU_ATHLON64, fpus_internal, 1800000000, 9.0, 1350, 0x40FF2, 0x40FF2, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 58, 58, 19, 19, 216 },
+            { "3200+", CPU_ATHLON64, fpus_internal, 2000000000, 10.0, 1350, 0x40FF2, 0x40FF2, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 58, 58, 19, 19, 240 },
+            { "3500+", CPU_ATHLON64, fpus_internal, 2200000000, 11.0, 1300, 0x40FF2, 0x40FF2, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 58, 58, 19, 19, 264 },
+            { "3800+", CPU_ATHLON64, fpus_internal, 2400000000, 12.0, 1300, 0x40FF2, 0x40FF2, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 58, 58, 19, 19, 288 },
+            { .name = "", 0 }
+        }
+    },
+    {
+        .package       = CPU_PKG_SOCKETAM2,
+        .manufacturer  = "AMD",
+        .name          = "Sempron (Manila)",
+        .internal_name = "sempron_manila",
+        .cpus          = (const CPU[]) {
+            { "2800+", CPU_SEMPRON, fpus_internal, 1600000000, 8.0, 1350, 0x40FC2, 0x40FC2, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 52, 52, 17, 17, 192 },
+            { "3000+", CPU_SEMPRON, fpus_internal, 1800000000, 9.0, 1350, 0x40FC2, 0x40FC2, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 52, 52, 17, 17, 216 },
+            { "3200+", CPU_SEMPRON, fpus_internal, 1800000000, 9.0, 1300, 0x40FC2, 0x40FC2, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 52, 52, 17, 17, 216 },
+            { "3500+", CPU_SEMPRON, fpus_internal, 2000000000, 10.0, 1300, 0x40FC2, 0x40FC2, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 52, 52, 17, 17, 240 },
+            { "3600+", CPU_SEMPRON, fpus_internal, 2000000000, 10.0, 1250, 0x40FC2, 0x40FC2, 0, CPU_SUPPORTS_DYNAREC | CPU_REQUIRES_DYNAREC, 52, 52, 17, 17, 240 },
+            { .name = "", 0 }
+        }
+    },
     { .package = 0, 0 }
   // clang-format on
 };

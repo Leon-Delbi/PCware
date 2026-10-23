@@ -88,42 +88,70 @@ enum {
     CPU_PENTIUM3,
     CPU_PENTIUM4W,
     CPU_GENERICINTEL,
+    /* 64-bit capable CPUs.  These identify the real silicon for CPUID, MSR,
+     * speed and voltage purposes; the execution core still runs them in
+     * legacy (32-bit) mode because long mode is not implemented yet. */
+    CPU_ATHLON64,
+    CPU_ATHLON64_X2,
+    CPU_SEMPRON,
+    CPU_PENTIUM4_EM64T,
+    CPU_PENTIUM_D,
+    CPU_CORE2,
+    CPU_CORE2_QUAD,
 };
 
-enum {
-    CPU_PKG_8088             = (1 << 0),
-    CPU_PKG_80C88            = (1 << 28),
-    CPU_PKG_8088_EUROPC      = (1 << 1),
-    CPU_PKG_8088_VTECH       = (1 << 2),
-    CPU_PKG_8086             = (1 << 3),
-    CPU_PKG_8086_MAZOVIA     = (1 << 4),
-    CPU_PKG_8086_VTECH       = (1 << 5),
-    CPU_PKG_188              = (1 << 6),
-    CPU_PKG_186              = (1 << 7),
-    CPU_PKG_286              = (1 << 8),
-    CPU_PKG_386SX            = (1 << 9),
-    CPU_PKG_386DX            = (1 << 10),
-    CPU_PKG_386DX_DESKPRO386 = (1 << 11),
-    CPU_PKG_M6117            = (1 << 12),
-    CPU_PKG_386SLC_IBM       = (1 << 13),
-    CPU_PKG_486SLC           = (1 << 14),
-    CPU_PKG_486SLC_IBM       = (1 << 15),
-    CPU_PKG_486BL            = (1 << 16),
-    CPU_PKG_486DLC           = (1 << 17),
-    CPU_PKG_SOCKET1          = (1 << 18),
-    CPU_PKG_SOCKET3          = (1 << 19),
-    CPU_PKG_SOCKET3_PC330    = (1 << 20),
-    CPU_PKG_STPC             = (1 << 21),
-    CPU_PKG_SOCKET4          = (1 << 22),
-    CPU_PKG_SOCKET5_7        = (1 << 23),
-    CPU_PKG_SOCKET8          = (1 << 24),
-    CPU_PKG_SLOT1            = (1 << 25),
-    CPU_PKG_SLOT2            = (1 << 26),
-    CPU_PKG_SOCKET370        = (1 << 27),
-    CPU_PKG_SLOTA            = (1 << 28),
-    CPU_PKG_SOCKET423        = (1 << 29),
-    CPU_PKG_SOCKET478        = (1 << 30),
-};
+/* CPU package (socket/slot) masks.  64-bit wide because the x64 era needs
+ * more packages than the 32 bits of the original 86Box layout allowed. */
+#define CPU_PKG_8088               (1ULL <<  0)  
+#define CPU_PKG_80C88              (1ULL << 40)  /* 80C88 is a lower-power 8088; moved off bit 28 (Slot A) */
+#define CPU_PKG_8088_EUROPC        (1ULL <<  1)  
+#define CPU_PKG_8088_VTECH         (1ULL <<  2)  
+#define CPU_PKG_8086               (1ULL <<  3)  
+#define CPU_PKG_8086_MAZOVIA       (1ULL <<  4)  
+#define CPU_PKG_8086_VTECH         (1ULL <<  5)  
+#define CPU_PKG_188                (1ULL <<  6)  
+#define CPU_PKG_186                (1ULL <<  7)  
+#define CPU_PKG_286                (1ULL <<  8)  
+#define CPU_PKG_386SX              (1ULL <<  9)  
+#define CPU_PKG_386DX              (1ULL << 10)  
+#define CPU_PKG_386DX_DESKPRO386   (1ULL << 11)  
+#define CPU_PKG_M6117              (1ULL << 12)  
+#define CPU_PKG_386SLC_IBM         (1ULL << 13)  
+#define CPU_PKG_486SLC             (1ULL << 14)  
+#define CPU_PKG_486SLC_IBM         (1ULL << 15)  
+#define CPU_PKG_486BL              (1ULL << 16)  
+#define CPU_PKG_486DLC             (1ULL << 17)  
+#define CPU_PKG_SOCKET1            (1ULL << 18)  
+#define CPU_PKG_SOCKET3            (1ULL << 19)  
+#define CPU_PKG_SOCKET3_PC330      (1ULL << 20)  
+#define CPU_PKG_STPC               (1ULL << 21)  
+#define CPU_PKG_SOCKET4            (1ULL << 22)  
+#define CPU_PKG_SOCKET5_7          (1ULL << 23)  
+#define CPU_PKG_SOCKET8            (1ULL << 24)  
+#define CPU_PKG_SLOT1              (1ULL << 25)  
+#define CPU_PKG_SLOT2              (1ULL << 26)  
+#define CPU_PKG_SOCKET370          (1ULL << 27)  
+#define CPU_PKG_SLOTA              (1ULL << 28)  
+#define CPU_PKG_SOCKET423          (1ULL << 29)  
+#define CPU_PKG_SOCKET478          (1ULL << 30)  
+#define CPU_PKG_SOCKET754          (1ULL << 31)  /* x64-era package */
+#define CPU_PKG_SOCKET939          (1ULL << 32)  /* x64-era package */
+#define CPU_PKG_SOCKET940          (1ULL << 33)  /* x64-era package */
+#define CPU_PKG_SOCKETAM2          (1ULL << 34)  /* x64-era package */
+#define CPU_PKG_SOCKETAM2PLUS      (1ULL << 35)  /* x64-era package */
+#define CPU_PKG_SOCKETF            (1ULL << 36)  /* x64-era package */
+#define CPU_PKG_LGA775             (1ULL << 37)  /* x64-era package */
+#define CPU_PKG_LGA771             (1ULL << 38)  /* x64-era package */
+#define CPU_PKG_LGA1366            (1ULL << 39)  /* x64-era package */
+
+/* True for the 64-bit capable CPU types added for the x64 era.  These are
+ * identified (CPUID, MSRs, speed) as their real silicon, but the execution
+ * core still runs them in legacy 32-bit mode. */
+static inline int
+cpu_is_x64(uint64_t cpu_type)
+{
+    return (cpu_type >= CPU_ATHLON64) && (cpu_type <= CPU_CORE2_QUAD);
+}
 
 #define CPU_SUPPORTS_DYNAREC 1
 #define CPU_REQUIRES_DYNAREC 2
@@ -664,6 +692,47 @@ extern int hasfpu;
 #define CPU_FEATURE_CLFLUSH (1 << 14)
 #define CPU_FEATURE_NX      (1 << 15)
 #define CPU_FEATURE_MONITOR_MWAIT (1 << 16)
+
+/* CPUID feature flags (standard and extended leaves).  These are the bits
+   reported to the guest through CPUID and are shared by cpu.c (the CPUID
+   implementation) and x64.c (the 64-bit processor identification tables). */
+enum {
+    CPUID_FPU       = (1 << 0),  /* On-chip Floating Point Unit */
+    CPUID_VME       = (1 << 1),  /* Virtual 8086 mode extensions */
+    CPUID_DE        = (1 << 2),  /* Debugging extensions */
+    CPUID_PSE       = (1 << 3),  /* Page Size Extension */
+    CPUID_TSC       = (1 << 4),  /* Time Stamp Counter */
+    CPUID_MSR       = (1 << 5),  /* Model-specific registers */
+    CPUID_PAE       = (1 << 6),  /* Physical Address Extension */
+    CPUID_MCE       = (1 << 7),  /* Machine Check Exception */
+    CPUID_CMPXCHG8B = (1 << 8),  /* CMPXCHG8B instruction */
+    CPUID_LAPIC      = (1 << 9),  /* On-chip APIC */
+    CPUID_AMDPGE    = (1 << 9),  /* Global Page Enable (AMD K5 Model 0 only) */
+    CPUID_AMDSEP    = (1 << 10), /* SYSCALL and SYSRET instructions (AMD K6 only) */
+    CPUID_SEP       = (1 << 11), /* SYSENTER and SYSEXIT instructions (SYSCALL and SYSRET if EAX=80000001h) */
+    CPUID_MTRR      = (1 << 12), /* Memory type range registers */
+    CPUID_PGE       = (1 << 13), /* Page Global Enable */
+    CPUID_MCA       = (1 << 14), /* Machine Check Architecture */
+    CPUID_CMOV      = (1 << 15), /* Conditional move instructions */
+    CPUID_PAT       = (1 << 16), /* Page Attribute Table */
+    CPUID_PSE36     = (1 << 17), /* 36-bit Page Size Extension */
+    CPUID_PSN       = (1 << 18), /* Processor Serial Number */
+    CPUID_CLFLUSH   = (1 << 19), /* CLFLUSH instruction */
+    CPUID_MMX       = (1 << 23), /* MMX technology */
+    CPUID_FXSR      = (1 << 24), /* FXSAVE and FXRSTOR instructions */
+    CPUID_SSE       = (1 << 25),
+    CPUID_SSE2      = (1 << 26),
+
+    CPUID_SSE3      = (1 << 0),
+    CPUID_MONITOR_MWAIT = (1 << 3),
+    CPUID_SSSE3     = (1 << 9),
+
+    CPUID_NX        = (1 << 20)  /* NX bit */
+};
+
+/* Additional flags returned by CPUID function 0x80000001 */
+#define CPUID_3DNOWE (1UL << 30UL) /* Extended 3DNow! instructions */
+#define CPUID_3DNOW  (1UL << 31UL) /* 3DNow! instructions */
 
 extern uint64_t cpu_features;
 

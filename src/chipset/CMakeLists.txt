@@ -50,7 +50,9 @@ add_library(chipset OBJECT
     intel_sio.c
     intel_815ep.c
     intel_845.c
+    intel_915.c
     intel_ich2.c
+    intel_ich6.c
     intel_piix.c
     isa486c.c
     ../ioapic.c
@@ -103,6 +105,8 @@ add_library(chipset OBJECT
     umc_8890.c
     ut85c50x.c
     via_apollo.c
+    via_k8t800.c
+    via_vt8237.c
     via_pipc.c
     vl82c480.c
     vl82c59x.c

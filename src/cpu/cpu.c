@@ -29,6 +29,7 @@
 #define HAVE_STDARG_H
 #include <86box/86box.h>
 #include "cpu.h"
+#include "x64.h"
 #include "x86.h"
 #include "x87_sf.h"
 #include <86box/device.h>
@@ -53,43 +54,6 @@
 #endif /* USE_DYNAREC */
 #include "x87_timings.h"
 
-enum {
-    CPUID_FPU       = (1 << 0),  /* On-chip Floating Point Unit */
-    CPUID_VME       = (1 << 1),  /* Virtual 8086 mode extensions */
-    CPUID_DE        = (1 << 2),  /* Debugging extensions */
-    CPUID_PSE       = (1 << 3),  /* Page Size Extension */
-    CPUID_TSC       = (1 << 4),  /* Time Stamp Counter */
-    CPUID_MSR       = (1 << 5),  /* Model-specific registers */
-    CPUID_PAE       = (1 << 6),  /* Physical Address Extension */
-    CPUID_MCE       = (1 << 7),  /* Machine Check Exception */
-    CPUID_CMPXCHG8B = (1 << 8),  /* CMPXCHG8B instruction */
-    CPUID_LAPIC      = (1 << 9),  /* On-chip APIC */
-    CPUID_AMDPGE    = (1 << 9),  /* Global Page Enable (AMD K5 Model 0 only) */
-    CPUID_AMDSEP    = (1 << 10), /* SYSCALL and SYSRET instructions (AMD K6 only) */
-    CPUID_SEP       = (1 << 11), /* SYSENTER and SYSEXIT instructions (SYSCALL and SYSRET if EAX=80000001h) */
-    CPUID_MTRR      = (1 << 12), /* Memory type range registers */
-    CPUID_PGE       = (1 << 13), /* Page Global Enable */
-    CPUID_MCA       = (1 << 14), /* Machine Check Architecture */
-    CPUID_CMOV      = (1 << 15), /* Conditional move instructions */
-    CPUID_PAT       = (1 << 16), /* Page Attribute Table */
-    CPUID_PSE36     = (1 << 17), /* 36-bit Page Size Extension */
-    CPUID_PSN       = (1 << 18), /* Processor Serial Number */
-    CPUID_CLFLUSH   = (1 << 19), /* CLFLUSH instruction */
-    CPUID_MMX       = (1 << 23), /* MMX technology */
-    CPUID_FXSR      = (1 << 24), /* FXSAVE and FXRSTOR instructions */
-    CPUID_SSE       = (1 << 25),
-    CPUID_SSE2      = (1 << 26),
-
-    CPUID_SSE3      = (1 << 0),
-    CPUID_MONITOR_MWAIT = (1 << 3),
-    CPUID_SSSE3     = (1 << 9),
-
-    CPUID_NX        = (1 << 20)  /* NX bit */
-};
-
-/* Additional flags returned by CPUID function 0x80000001 */
-#define CPUID_3DNOWE (1UL << 30UL) /* Extended 3DNow! instructions */
-#define CPUID_3DNOW  (1UL << 31UL) /* 3DNow! instructions */
 
 /* Remove the Debugging Extensions CPUID flag if not compiled
    with debug register support for 486 and later CPUs. */
@@ -425,7 +389,7 @@ cpu_is_eligible(const cpu_family_t *cpu_family, int cpu, int machine)
 {
     const machine_t *machine_s = &machines[machine];
     const CPU       *cpu_s     = &cpu_family->cpus[cpu];
-    uint32_t         packages;
+    uint64_t         packages;
     uint32_t         bus_speed;
     uint8_t          i;
     double           multi;
@@ -1950,6 +1914,10 @@ cpu_set(void)
             break;
 
         case CPU_PENTIUM4W:
+        case CPU_PENTIUM4_EM64T:
+        case CPU_PENTIUM_D:
+        case CPU_CORE2:
+        case CPU_CORE2_QUAD:
 #ifdef USE_DYNAREC
             x86_setopcodes(ops_386, ops_genericintel_0f, dynarec_ops_386, dynarec_ops_genericintel_0f);
             if (fpu_softfloat) {
@@ -2128,6 +2096,9 @@ cpu_set(void)
             break;
 
         case CPU_ATHLON:
+        case CPU_ATHLON64:
+        case CPU_ATHLON64_X2:
+        case CPU_SEMPRON:
 #ifdef USE_DYNAREC
             x86_setopcodes(ops_386, ops_k62_0f, dynarec_ops_386, dynarec_ops_k62_0f);
             x86_dynarec_opcodes_da_a16  = dynarec_ops_fpu_686_da_a16;
@@ -2330,6 +2301,14 @@ cpu_set(void)
             fatal("cpu_set : unknown CPU type %" PRIu64 "\n", cpu_s->cpu_type);
     }
 
+    /* The x64-era CPUs reuse the proven K7/NetBurst execution core above, but
+     * they really do implement SSE2, CLFLUSH, NX and PAE, so a 32-bit OS of
+     * that period must be able to see and use them. */
+    if (cpu_is_x64(cpu_s->cpu_type)) {
+        cpu_features |= CPU_FEATURE_SSE2 | CPU_FEATURE_CLFLUSH | CPU_FEATURE_NX;
+        cpu_CR4_mask |= CR4_PAE;
+    }
+
 #ifdef USE_DYNAREC
     if(x86_dynarec_opcodes_REPE_0f == NULL) x86_dynarec_opcodes_REPE_0f = x86_dynarec_opcodes_0f;
     if(x86_dynarec_opcodes_REPNE_0f == NULL) x86_dynarec_opcodes_REPNE_0f = x86_dynarec_opcodes_0f;
@@ -2515,6 +2494,17 @@ void
 cpu_CPUID(void)
 {
     switch (cpu_s->cpu_type) {
+        case CPU_ATHLON64:
+        case CPU_ATHLON64_X2:
+        case CPU_SEMPRON:
+        case CPU_PENTIUM4_EM64T:
+        case CPU_PENTIUM_D:
+        case CPU_CORE2:
+        case CPU_CORE2_QUAD:
+            /* 64-bit processor identification lives in x64.c. */
+            x64_cpuid_leaf(cpu_s, EAX);
+            break;
+
         case CPU_i486SX_SLENH:
             if (!EAX) {
                 EAX = 0x00000001;
@@ -3510,6 +3500,9 @@ cpu_ven_reset(void)
             break;
         
         case CPU_ATHLON:
+        case CPU_ATHLON64:
+        case CPU_ATHLON64_X2:
+        case CPU_SEMPRON:
             msr.mtrr_cap = 0x00000508ULL;
             /* FALLTHROUGH */
 
@@ -3561,6 +3554,10 @@ cpu_ven_reset(void)
             break;
 
         case CPU_PENTIUM4W:
+        case CPU_PENTIUM4_EM64T:
+        case CPU_PENTIUM_D:
+        case CPU_CORE2:
+        case CPU_CORE2_QUAD:
             msr.mtrr_cap = 0x00000508ULL;
             msr.apic_base = 0xFEE00000ULL | (1 << 11) | (1 << 8);
             break;
@@ -3869,6 +3866,9 @@ cpu_RDMSR(void)
         case CPU_K6_2P:
         case CPU_K6_3P:
         case CPU_ATHLON:
+        case CPU_ATHLON64:
+        case CPU_ATHLON64_X2:
+        case CPU_SEMPRON:
             EAX = 0;
             /* EDX is left unchanged when reading this MSR! */
             if (ECX != 0x82)
@@ -4781,6 +4781,10 @@ i686_invalid_rdmsr:
             }
 
         case CPU_PENTIUM4W:
+        case CPU_PENTIUM4_EM64T:
+        case CPU_PENTIUM_D:
+        case CPU_CORE2:
+        case CPU_CORE2_QUAD:
         {
             EAX = EDX = 0;
             switch(ECX)
@@ -5269,6 +5273,9 @@ cpu_WRMSR(void)
         case CPU_K6_2P:
         case CPU_K6_3P:
         case CPU_ATHLON:
+        case CPU_ATHLON64:
+        case CPU_ATHLON64_X2:
+        case CPU_SEMPRON:
             switch (ECX) {
                 /* Machine Check Address Register */
                 case 0x00000000:
@@ -6077,6 +6084,10 @@ i686_invalid_wrmsr:
             break;
             }
         case CPU_PENTIUM4W:
+        case CPU_PENTIUM4_EM64T:
+        case CPU_PENTIUM_D:
+        case CPU_CORE2:
+        case CPU_CORE2_QUAD:
         {
             switch(ECX)
             {
